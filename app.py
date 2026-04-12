@@ -3,9 +3,6 @@ import mysql.connector
 import pandas as pd
 from datetime import date
 
-# ─────────────────────────────────────────────
-# DATABASE CONNECTION
-# ─────────────────────────────────────────────
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -14,18 +11,12 @@ def get_connection():
         database="sales_management_system"
     )
 
-# ─────────────────────────────────────────────
-# PAGE CONFIG
-# ─────────────────────────────────────────────
 st.set_page_config(
     page_title="Sales Intelligence Hub",
     page_icon="📊",
     layout="wide"
 )
 
-# ─────────────────────────────────────────────
-# SESSION STATE INIT
-# ─────────────────────────────────────────────
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -35,17 +26,14 @@ if "role" not in st.session_state:
 if "branch_id" not in st.session_state:
     st.session_state.branch_id = None
 
-# ─────────────────────────────────────────────
-# LOGIN PAGE
-# ─────────────────────────────────────────────
 def login_page():
-    st.markdown("<h1 style='text-align:center;'>📊 Sales Intelligence Hub</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center;'>Sales Intelligence Hub</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align:center; color:gray;'>GUVI | HCL Project</h4>", unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.subheader("🔐 Login")
+        st.subheader("Login")
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
 
@@ -71,10 +59,6 @@ def login_page():
                     st.error("Invalid username or password!")
             except Exception as e:
                 st.error(f"Connection error: {e}")
-
-# ─────────────────────────────────────────────
-# HELPER: GET BRANCHES
-# ─────────────────────────────────────────────
 def get_branches():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -83,35 +67,31 @@ def get_branches():
     conn.close()
     return branches
 
-# ─────────────────────────────────────────────
-# DASHBOARD
-# ─────────────────────────────────────────────
 def dashboard():
-    # Sidebar
-    with st.sidebar:
+  with st.sidebar:
         st.markdown(f"### 👤 {st.session_state.username}")
         st.markdown(f"**Role:** {st.session_state.role}")
         st.markdown("---")
         menu = st.radio("Navigation", [
-            "🏠 Dashboard",
-            "➕ Add Sale",
-            "💳 Add Payment",
-            "📋 View Sales",
-            "💰 Pending Payments",
-            "📊 Analytics",
-            "🔍 SQL Queries"
+            "Dashboard",
+            "Add Sale",
+            "Add Payment",
+            "View Sales",
+            "Pending Payments",
+            "Analytics",
+            "SQL Queries"
         ])
         st.markdown("---")
-        if st.button("🚪 Logout"):
+        if st.button("Logout"):
             st.session_state.logged_in = False
             st.session_state.username = ""
             st.session_state.role = ""
             st.session_state.branch_id = None
             st.rerun()
 
-    # ── HOME ──
-    if menu == "🏠 Dashboard":
-        st.title("📊 Sales Intelligence Hub")
+
+    if menu == "Dashboard":
+        st.title("Sales Intelligence Hub")
         st.markdown(f"Welcome back, **{st.session_state.username}**!")
         st.markdown("---")
 
@@ -127,9 +107,9 @@ def dashboard():
         conn.close()
 
         col1, col2, col3 = st.columns(3)
-        col1.metric("💰 Total Gross Sales", f"₹{kpi['total'] or 0:,.2f}")
-        col2.metric("✅ Total Received", f"₹{kpi['received'] or 0:,.2f}")
-        col3.metric("⏳ Total Pending", f"₹{kpi['pending'] or 0:,.2f}")
+        col1.metric(" Total Gross Sales", f"₹{kpi['total'] or 0:,.2f}")
+        col2.metric(" Total Received", f"₹{kpi['received'] or 0:,.2f}")
+        col3.metric(" Total Pending", f"₹{kpi['pending'] or 0:,.2f}")
 
     # ── ADD SALE ──
     elif menu == "➕ Add Sale":
@@ -171,7 +151,7 @@ def dashboard():
                         )
                         conn.commit()
                         conn.close()
-                        st.success(f"✅ Sale added successfully for {name}!")
+                        st.success(f"Sale added successfully for {name}!")
                     except Exception as e:
                         st.error(f"Error: {e}")
                 else:
@@ -215,15 +195,13 @@ def dashboard():
                             )
                             conn.commit()
                             conn.close()
-                            st.success("✅ Payment added successfully!")
+                            st.success("Payment added successfully!")
                         except Exception as e:
                             st.error(f"Error: {e}")
                     else:
                         st.warning("Please enter a valid amount!")
-
-    # ── VIEW SALES ──
-    elif menu == "📋 View Sales":
-        st.title("📋 Sales Report")
+    elif menu == "View Sales":
+        st.title("Sales Report")
         st.markdown("---")
 
         conn = get_connection()
@@ -273,10 +251,8 @@ def dashboard():
             st.info(f"Total Records: {len(df)}")
         else:
             st.info("No sales records found!")
-
-    # ── PENDING PAYMENTS ──
-    elif menu == "💰 Pending Payments":
-        st.title("💰 Pending Payments")
+    elif menu == " Pending Payments":
+        st.title(" Pending Payments")
         st.markdown("---")
 
         conn = get_connection()
@@ -310,17 +286,12 @@ def dashboard():
             total_pending = df["pending_amount"].sum()
             st.error(f"Total Pending Amount: ₹{total_pending:,.2f}")
         else:
-            st.success("No pending payments! 🎉")
-
-    # ── ANALYTICS ──
-    elif menu == "📊 Analytics":
-        st.title("📊 Analytics & Insights")
+            st.success("No pending payments! ")
+    elif menu == "Analytics":
+        st.title("Analytics & Insights")
         st.markdown("---")
-
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
-
-        # Branch-wise sales
         cursor.execute("""
             SELECT b.branch_name,
                    SUM(cs.gross_sales) AS gross,
@@ -331,16 +302,12 @@ def dashboard():
             GROUP BY b.branch_name
         """)
         branch_data = cursor.fetchall()
-
-        # Payment method summary
         cursor.execute("""
             SELECT payment_method, SUM(amount_paid) AS total
             FROM payment_splits
             GROUP BY payment_method
         """)
         payment_data = cursor.fetchall()
-
-        # Sales status
         cursor.execute("""
             SELECT status, COUNT(*) AS count
             FROM customer_sales
@@ -352,26 +319,24 @@ def dashboard():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.subheader("🏢 Branch-wise Sales")
+            st.subheader("Branch-wise Sales")
             if branch_data:
                 df_branch = pd.DataFrame(branch_data)
                 st.dataframe(df_branch, use_container_width=True)
                 st.bar_chart(df_branch.set_index("branch_name")["gross"])
 
         with col2:
-            st.subheader("💳 Payment Method Summary")
+            st.subheader("Payment Method Summary")
             if payment_data:
                 df_pay = pd.DataFrame(payment_data)
                 st.dataframe(df_pay, use_container_width=True)
 
-        st.subheader("📈 Sales Status (Open vs Close)")
+        st.subheader("Sales Status (Open vs Close)")
         if status_data:
             df_status = pd.DataFrame(status_data)
             st.dataframe(df_status, use_container_width=True)
-
-    # ── SQL QUERIES ──
-    elif menu == "🔍 SQL Queries":
-        st.title("🔍 Predefined SQL Queries")
+    elif menu == " SQL Queries":
+        st.title(" Predefined SQL Queries")
         st.markdown("---")
 
         queries = {
@@ -439,10 +404,6 @@ def dashboard():
                     st.info("No results found!")
             except Exception as e:
                 st.error(f"Error: {e}")
-
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
 if st.session_state.logged_in:
     dashboard()
 else:
