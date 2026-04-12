@@ -1,25 +1,11 @@
--- ============================================
--- SALES INTELLIGENCE HUB
--- Database Schema - MySQL
--- GUVI | HCL Project
--- ============================================
-
--- Create and select the database
 CREATE DATABASE IF NOT EXISTS sales_management_system;
 USE sales_management_system;
-
--- ─────────────────────────────────────────────
--- TABLE 1: branches
--- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS branches (
     branch_id INT PRIMARY KEY AUTO_INCREMENT,
     branch_name VARCHAR(100) NOT NULL,
     branch_admin_name VARCHAR(100) NOT NULL
 );
 
--- ─────────────────────────────────────────────
--- TABLE 2: customer_sales
--- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS customer_sales (
     sale_id INT PRIMARY KEY AUTO_INCREMENT,
     branch_id INT NOT NULL,
@@ -34,9 +20,6 @@ CREATE TABLE IF NOT EXISTS customer_sales (
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
 );
 
--- ─────────────────────────────────────────────
--- TABLE 3: users
--- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(100) NOT NULL,
@@ -47,9 +30,6 @@ CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
 );
 
--- ─────────────────────────────────────────────
--- TABLE 4: payment_splits
--- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS payment_splits (
     payment_id INT PRIMARY KEY AUTO_INCREMENT,
     sale_id INT NOT NULL,
@@ -59,9 +39,6 @@ CREATE TABLE IF NOT EXISTS payment_splits (
     FOREIGN KEY (sale_id) REFERENCES customer_sales(sale_id)
 );
 
--- ─────────────────────────────────────────────
--- TRIGGER: Auto-update received_amount
--- ─────────────────────────────────────────────
 DELIMITER //
 CREATE TRIGGER update_received_amount
 AFTER INSERT ON payment_splits
@@ -78,5 +55,4 @@ END;
 //
 DELIMITER ;
 
--- Verify tables created
 SHOW TABLES;
