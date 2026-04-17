@@ -24,7 +24,6 @@ if "branch_id" not in st.session_state:
 
 def login_page():
     st.markdown("<h1 style='text-align:center;'>📊 Sales Intelligence Hub</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align:center; color:gray;'>GUVI | HCL Project</h4>", unsafe_allow_html=True)
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
